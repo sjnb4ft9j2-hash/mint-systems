@@ -274,8 +274,9 @@ function summarize(sales) {
 function summaryHTML(sales, title) {
   const s = summarize(sales);
   const items = Object.entries(s.byItem).sort((a, b) => b[1].c - a[1].c);
+  const mgr = isManager();
   return `
-    <div class="card">
+    ${mgr ? `<div class="card">
       <div class="muted small">${esc(title)}</div>
       <div class="big">${money(s.total)}</div>
       <div class="stats">
@@ -283,11 +284,14 @@ function summaryHTML(sales, title) {
         <div class="stat"><div class="small muted">Cash</div><div class="v">${money(s.cash)}</div></div>
         <div class="stat"><div class="small muted">Card</div><div class="v">${money(s.card)}</div></div>
       </div>
-    </div>
+    </div>` : `<div class="card">
+      <div class="muted small">${esc(title)}</div>
+      <div class="big">${s.count} sale${s.count === 1 ? '' : 's'}</div>
+    </div>`}
     <div class="card">
       <div style="font-weight:700;margin-bottom:4px">What sold</div>
-      ${items.length ? `<table><tr><th>Item</th><th class="r">Qty</th><th class="r">Total</th></tr>
-        ${items.map(([n, v]) => `<tr><td>${esc(n)}</td><td class="r">${v.qty}</td><td class="r">${money(v.c)}</td></tr>`).join('')}
+      ${items.length ? `<table><tr><th>Item</th><th class="r">Qty</th>${mgr ? '<th class="r">Total</th>' : ''}</tr>
+        ${items.map(([n, v]) => `<tr><td>${esc(n)}</td><td class="r">${v.qty}</td>${mgr ? `<td class="r">${money(v.c)}</td>` : ''}</tr>`).join('')}
       </table>` : '<div class="empty">No sales yet.</div>'}
     </div>
     <div class="card">
@@ -353,11 +357,14 @@ function saveDraft() {
 
 // ---------- render ----------
 function render() {
+  const histBtn = document.querySelector('nav button[data-tab="history"]');
+  if (histBtn) histBtn.classList.toggle('hidden', !isManager());
+  if (S.tab === 'history' && !isManager()) S.tab = 'sell';
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   ['sell', 'today', 'history', 'prices'].forEach(t => $('#tab-' + t).classList.toggle('hidden', S.tab !== t));
   $('#bar').classList.toggle('hidden', S.tab !== 'sell');
   if (S.tab === 'sell') renderSell();
-  if (S.tab === 'today') $('#tab-today').innerHTML = summaryHTML(S.todaySales, 'Taken today · ' + prettyDay(S.today));
+  if (S.tab === 'today') $('#tab-today').innerHTML = summaryHTML(S.todaySales, (isManager() ? 'Taken today · ' : 'Today · ') + prettyDay(S.today));
   if (S.tab === 'history') renderHistory();
   if (S.tab === 'prices') renderPrices();
   renderBar();

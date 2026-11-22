@@ -1,6 +1,6 @@
 // Keeps the app opening when there's no internet.
 // Change the version number whenever you upload new files.
-const CACHE = 'mint-v2';
+const CACHE = 'mint-v3';
 const SHELL = ['./', 'index.html', 'app.js', 'manifest.json', 'logo.png', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
