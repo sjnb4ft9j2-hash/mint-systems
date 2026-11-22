@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // STAFF LIST: put each staff email here, in lowercase, inside quotes, separated by commas.
+    function isStaff() {
+      return request.auth != null && request.auth.token.email in [
+        'your-email@example.com'
+      ];
+    }
+
+    match /{document=**} {
+      allow read, write: if isStaff();
+    }
+  }
+}

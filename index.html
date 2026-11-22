@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mint Systems</title>
+<meta name="theme-color" content="#0f0b1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mint Systems">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0b1a; --panel:#1b1530; --panel2:#261d42; --line:#3a2d62; --purple:#a855f7;
+  --text:#f3effc; --muted:#a99cc9; --pink:#ff3fa8; --cyan:#3fd6f5; --yellow:#ffd23f; --red:#ff6b6b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;font-size:16px}
+header{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,#1b1430 80%,rgba(27,20,48,0));padding:12px 14px 6px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo{width:48px;height:48px;border-radius:50%;box-shadow:0 0 0 2px var(--pink),0 0 14px rgba(255,63,168,.55)}
+.brand h1{font-family:Righteous,sans-serif;font-size:21px;font-style:italic;margin:0;letter-spacing:.5px;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.status{font-size:11px;color:var(--muted);text-align:right}
+.status b{color:var(--cyan);font-weight:600}
+.status.warn b{color:var(--yellow)}
+nav{display:flex;gap:6px;margin-top:10px}
+nav button{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:9px 4px;border-radius:12px;font-weight:600;font-size:13px}
+nav button.on{background:var(--pink);border-color:var(--pink);color:#fff}
+main{padding:8px 14px 150px;max-width:760px;margin:0 auto}
+.cat{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:16px 2px 8px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.item{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 12px;text-align:left;color:var(--text);min-height:76px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .06s}
+.item:active{transform:scale(.97)}
+.item .n{font-weight:600;font-size:14px;line-height:1.25}
+.item .p{color:var(--cyan);font-weight:700;margin-top:6px}
+.item.has{border-color:var(--pink);background:#2b1838}
+.badge{position:absolute;top:-6px;right:-6px;background:var(--pink);color:#fff;border-radius:999px;min-width:24px;height:24px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;box-shadow:0 0 0 3px var(--bg)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.big{font-family:Righteous,sans-serif;font-size:38px;line-height:1.1}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.stat{background:var(--panel2);border-radius:12px;padding:10px}
+.stat .v{font-weight:700;font-size:17px;margin-top:2px}
+.btn{border:none;border-radius:12px;padding:12px 14px;font-weight:700;font-size:15px}
+.btn.pink{background:var(--pink);color:#fff}
+.btn.cyan{background:var(--cyan);color:#10101a}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.btn.red{background:transparent;color:var(--red);border:1px solid #5a2a3a}
+.btn:disabled{opacity:.4}
+.btn.full{width:100%}
+/* bottom checkout bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#1b1430;border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,.4)}
+.bar .inner{max-width:760px;margin:0 auto}
+.bar .tot{font-family:Righteous,sans-serif;font-size:26px}
+.sheet{max-height:62vh;overflow:auto;margin-bottom:10px}
+.line{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.line .nm{flex:1;font-size:14px}
+.line .amt{width:78px;text-align:right;font-weight:600}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:18px;font-weight:700}
+.qty span{min-width:22px;text-align:center;font-weight:700}
+.seg{display:flex;background:var(--panel2);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;border:none;background:transparent;color:var(--muted);padding:10px;border-radius:10px;font-weight:700}
+.seg button.on{background:var(--cyan);color:#10101a}
+.field{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px 12px}
+.field:focus{outline:2px solid var(--pink);border-color:transparent}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.quick button{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:7px 12px;font-weight:600;font-size:13px}
+.change{margin-top:10px;padding:12px;border-radius:12px;background:#123a37;color:var(--cyan);font-weight:700;display:flex;justify-content:space-between;font-size:18px}
+.change.short{background:#3a1626;color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+td.r,th.r{text-align:right}
+.sale{padding:10px 0;border-bottom:1px solid var(--line)}
+.sale:last-child{border-bottom:none}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--panel2);color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.pill.cash{background:#173b2c;color:#6ee7a8}
+.pill.card{background:#1c2c4a;color:#8ab4ff}
+.edit{display:grid;grid-template-columns:1fr 92px 36px;gap:6px;align-items:center;margin-bottom:6px}
+.edit .x{background:transparent;border:1px solid #5a2a3a;color:var(--red);border-radius:10px;height:40px;font-size:18px}
+.toast{position:fixed;left:50%;top:16px;transform:translateX(-50%) translateY(-120px);background:var(--cyan);color:#10101a;font-weight:700;padding:12px 18px;border-radius:12px;z-index:60;transition:transform .25s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:none;align-items:flex-end;justify-content:center;padding:14px}
+.modal.show{display:flex}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;width:100%;max-width:460px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.hidden{display:none !important}
+.notice{background:#3a2f14;color:var(--yellow);border-radius:12px;padding:10px 12px;font-size:13px;margin-top:8px}
+
+.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.screen .box{width:100%;max-width:380px;text-align:center}
+.screen img{width:150px;height:150px;border-radius:50%;box-shadow:0 0 0 3px var(--pink),0 0 30px rgba(255,63,168,.5);margin-bottom:18px}
+.screen .field{margin-top:10px;text-align:left}
+.screen textarea.field{min-height:160px;font-family:ui-monospace,monospace;font-size:13px}
+.err{color:var(--red);font-size:14px;margin-top:10px;min-height:18px}
+.who{font-size:13px;color:var(--muted);margin-top:16px;text-align:center}
+.who button{background:none;border:none;color:var(--pink);font-weight:700;font-size:13px}
+.by{font-size:11px;color:var(--muted)}
+
+header{padding-top:calc(12px + env(safe-area-inset-top))}
+</style>
+</head>
+<body>
+
+<!-- Setup screen: only shows if no Firebase config is set -->
+<div class="screen hidden" id="setup">
+  <div class="box">
+    <img src="logo.png" alt="Mint Systems logo">
+    <div style="font-weight:700;font-size:18px">Connect to Firebase</div>
+    <p class="muted small">Paste the <b>firebaseConfig</b> block from your Firebase project settings.</p>
+    <textarea class="field" id="setup-config" placeholder="const firebaseConfig = {&#10;  apiKey: &quot;...&quot;,&#10;  authDomain: &quot;...&quot;,&#10;  projectId: &quot;...&quot;,&#10;  ...&#10;};"></textarea>
+    <div class="err" id="setup-err"></div>
+    <button class="btn pink full" id="setup-go" style="margin-top:6px">Connect</button>
+  </div>
+</div>
+
+<!-- Login screen -->
+<div class="screen hidden" id="login">
+  <form class="box" id="login-form">
+    <img src="logo.png" alt="Mint Systems logo">
+    <div style="font-weight:700;font-size:18px">Staff sign in</div>
+    <input class="field" id="login-email" type="email" autocomplete="username" placeholder="Email" required>
+    <input class="field" id="login-pass" type="password" autocomplete="current-password" placeholder="Password" required>
+    <div class="err" id="login-err"></div>
+    <button class="btn pink full" type="submit" id="login-go" style="margin-top:6px">Sign in</button>
+  </form>
+</div>
+
+<!-- Main app -->
+<div id="app" class="hidden">
+<header>
+  <div class="brand">
+    <div class="logo-wrap"><img src="logo.png" alt="Mint Systems logo" class="logo"><h1>MINT SYSTEMS</h1></div>
+    <div class="status" id="status"><b>Connecting…</b></div>
+  </div>
+  <nav>
+    <button data-tab="sell" class="on">Sell</button>
+    <button data-tab="today">Today</button>
+    <button data-tab="history">History</button>
+    <button data-tab="prices">Prices</button>
+  </nav>
+</header>
+<main>
+  <div id="notice"></div>
+  <section id="tab-sell"></section>
+  <section id="tab-today" class="hidden"></section>
+  <section id="tab-history" class="hidden"></section>
+  <section id="tab-prices" class="hidden"></section>
+</main>
+<div class="bar" id="bar">
+  <div class="inner">
+    <div id="sheet" class="sheet hidden"></div>
+    <div class="row">
+      <div>
+        <div class="small muted" id="bar-count">No items</div>
+        <div class="tot" id="bar-total">$0.00</div>
+      </div>
+      <div class="row" style="gap:6px">
+        <button class="btn ghost" id="bar-clear">Clear</button>
+        <button class="btn pink" id="bar-go">Checkout</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal" id="modal"><div class="box" id="modal-box"></div></div>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
