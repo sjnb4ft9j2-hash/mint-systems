@@ -20,6 +20,11 @@ import {
   doc, collection, query, where, onSnapshot, setDoc, deleteDoc, getDocs
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
+// MANAGERS: only these emails see the Delete button on sales.
+// (Must match the isManager() list in your Firestore rules.)
+const MANAGERS = ['cdownie78@gmail.com'];
+const isManager = () => !!(S.user && S.user.email && MANAGERS.includes(S.user.email.toLowerCase()));
+
 // Starting price list, used only the very first time (when the database is empty)
 const DEFAULT_ITEMS = [
   { id: "skate-rental", name: "Entry + skate rental", price: 15, cat: "Entry" },
@@ -225,6 +230,7 @@ function completeSale() {
 }
 
 function voidSale(id) {
+  if (!isManager()) { toast('Only managers can delete sales'); return; }
   const s = S.todaySales.find(x => x.id === id) || (S.histSales || []).find(x => x.id === id);
   if (!s) return;
   modal(`<div style="font-weight:700;font-size:18px">Delete this sale?</div>
@@ -234,7 +240,10 @@ function voidSale(id) {
 }
 function doVoid(id) {
   closeModal();
-  deleteDoc(doc(S.db, 'sales', id)).catch(handleDbError);
+  deleteDoc(doc(S.db, 'sales', id)).catch(err => {
+    if (err && err.code === 'permission-denied') toast('Only managers can delete sales');
+    else handleDbError(err);
+  });
   if (S.histSales) S.histSales = S.histSales.filter(x => x.id !== id);
   toast('Sale deleted'); render();
 }
@@ -288,7 +297,7 @@ function summaryHTML(sales, title) {
           <div class="row">
             <div><b>${money(x.totalC)}</b> <span class="pill ${esc(x.pay)}">${esc(x.pay)}</span></div>
             <div class="row" style="gap:8px"><span class="muted small">${esc(timeOf(x.ts))}</span>
-            <button class="btn red" style="padding:5px 10px;font-size:12px" data-act="void" data-id="${esc(x.id)}">Delete</button></div>
+            ${isManager() ? `<button class="btn red" style="padding:5px 10px;font-size:12px" data-act="void" data-id="${esc(x.id)}">Delete</button>` : ''}</div>
           </div>
           <div class="muted small" style="margin-top:4px">${(x.lines || []).map(l => esc(l.qty + '× ' + l.name)).join(', ')}
           ${x.tenderedC != null ? ` · given ${money(x.tenderedC)}, change ${money(x.changeC)}` : ''}</div>
